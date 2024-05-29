@@ -4,3 +4,4 @@ lusid-sdk-preview
 finbourne-sdk-utilities
 lusid-jam
 lusidtools
+lusid-scheduler-sdk-preview=0.0.829
