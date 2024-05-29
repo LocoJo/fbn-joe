@@ -37,21 +37,32 @@ pp = pprint.PrettyPrinter(indent=4)
 # Run the Notebook in Jupyterhub for your LUSID domain and authenticate automatically
 secrets_path = os.getenv("FBN_SECRETS_PATH")
 
-# Run the Notebook locally using a secrets file (see https://support.lusid.com/knowledgebase/article/KA-01663)
+# Default to using env variables if no secrets file.
 if secrets_path is None:
-    secrets_path = os.path.join(os.path.dirname(os.getcwd()), "secrets.json")
+    print("Using defaulted env variables for API Factory initialiastion.")
+    lusid_api_factory = lu.utilities.ApiClientFactory(
+        token=RefreshingToken(),
+        app_name="VSCode"
+    )
 
-lusid_api_factory = lu.utilities.ApiClientFactory(
-    token=RefreshingToken(),
-    api_secrets_filename=secrets_path,
-    app_name="VSCode"
-)
+    drive_api_factory = ld.utilities.ApiClientFactory(
+        token=RefreshingToken(),
+        app_name="VSCode"
+    )
 
-drive_api_factory = ld.utilities.ApiClientFactory(
-    token=RefreshingToken(),
-    api_secrets_filename=secrets_path,
-    app_name="VSCode"
-)
+# Use secerets file if it exists.
+else:
+    lusid_api_factory = lu.utilities.ApiClientFactory(
+        token=RefreshingToken(),
+        api_secrets_filename=secrets_path,
+        app_name="VSCode"
+    )
+
+    drive_api_factory = ld.utilities.ApiClientFactory(
+        token=RefreshingToken(),
+        api_secrets_filename=secrets_path,
+        app_name="VSCode"
+    )
 
 print('LUSID and Drive Environments Initialised')
 
