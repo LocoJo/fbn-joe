@@ -3,3 +3,4 @@
 secrets.json
 *.csv
 docker-setup.sh
+test.py
