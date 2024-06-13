@@ -1,0 +1,68 @@
+{"configurationRecipe":
+    {
+        "scope": "Demo",
+        "code": "standard-recipe-discounting",
+        "market": {
+            "marketRules": [
+                {
+                    "key": "Quote.Isin.*",
+                    "supplier": "Client",
+                    "dataScope": "Demo",
+                    "quoteType": "Price",
+                    "field": "mid",
+                    "priceSource": "Client",
+                    "sourceSystem": "Lusid"
+                }
+            ],
+            "suppliers": {},
+            "options": {
+                "defaultSupplier": "Client",
+                "defaultInstrumentCodeType": "Isin",
+                "defaultScope": "Demo",
+                "attemptToInferMissingFx": false,
+                "calendarScope": "CoppClarkHolidayCalendars",
+                "conventionScope": "Conventions"
+            },
+            "specificRules": [],
+            "groupedMarketRules": []
+        },
+        "pricing": {
+            "modelRules": [
+                {
+                    "supplier": "Lusid",
+                    "modelName": "Discounting",
+                    "instrumentType": "Bond"
+                }
+            ],
+            "modelChoice": {},
+            "options": {
+                "modelSelection": {
+                    "library": "Lusid",
+                    "model": "SimpleStatic"
+                },
+                "useInstrumentTypeToDeterminePricer": false,
+                "allowAnyInstrumentsWithSecUidToPriceOffLookup": false,
+                "allowPartiallySuccessfulEvaluation": true,
+                "produceSeparateResultForLinearOtcLegs": false,
+                "enableUseOfCachedUnitResults": false,
+                "windowValuationOnInstrumentStartEnd": false,
+                "removeContingentCashflowsInPaymentDiary": false,
+                "useChildSubHoldingKeysForPortfolioExpansion": false,
+                "validateDomesticAndQuoteCurrenciesAreConsistent": false,
+                "conservedQuantityForLookthroughExpansion": "PV"
+            },
+            "resultDataRules": []
+        },
+        "aggregation": {
+            "options": {
+                "useAnsiLikeSyntax": false,
+                "allowPartialEntitlementSuccess": false,
+                "applyIso4217Rounding": false
+            }
+        },
+        "description": "Standard recipe configuration",
+        "holding": {
+            "taxLotLevelHoldings": true
+        }
+    }
+}
