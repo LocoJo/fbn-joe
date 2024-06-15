@@ -25,8 +25,8 @@ pd.set_option("display.max_rows", None)
 pd.options.display.float_format = "{:,.2f}".format
 
 # Function definitions.
-def date_string(date):
-    return_string = f'_{date.day}_{date.month}_{date.year}'
+def datetime_string(datetime):
+    return_string = f'_{datetime.second}_{datetime.minute}_{datetime.hour}_{datetime.day}_{datetime.month}_{datetime.year}'
     return return_string
 
 # Handle API creating accross all endpoints.
@@ -121,7 +121,7 @@ body_data = df.to_csv(
 # Upload to drive.
 try:
     create_file_result = files_api.create_file(
-        x_lusid_drive_filename = f'{filename_prefix}' + date_string(datetime.date.today()) + '.csv',
+        x_lusid_drive_filename = f'{filename_prefix}' + datetime_string(datetime.datetime.now()) + '.csv',
         x_lusid_drive_path = f'{drive_path}/',
         content_length = len(body_data),
         body = body_data,
