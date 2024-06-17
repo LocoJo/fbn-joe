@@ -24,12 +24,12 @@ pd.set_option("display.max_columns", None)
 pd.set_option("display.max_rows", None)
 pd.options.display.float_format = "{:,.2f}".format
 
-# Function definitions.
+# Format for a datetime string in a file.
 def datetime_string(datetime):
     return_string = f'_{datetime.second}_{datetime.minute}_{datetime.hour}_{datetime.day}_{datetime.month}_{datetime.year}'
     return return_string
 
-# Handle API creating accross all endpoints.
+# Handle API creation accross all endpoints.
 def create_fbn_endpoints(*args):
     factories = []
 
@@ -38,7 +38,7 @@ def create_fbn_endpoints(*args):
             endpoint.utilities.ApiClientFactory(
                 token=RefreshingToken(),
                 api_secrets_filename=secrets_path,
-                app_name="VSCode"
+                app_name="Daily-holdings-report"
             )
         )
 
@@ -73,7 +73,11 @@ else:
 logger.info('LUSID and Drive Environments Initialised')
 
 # Define API endpoints.
+
+# Transaction api to get the holdings of the portfolio.
 portfolio_api = lusid_api_factory.build(la.TransactionPortfoliosApi)
+
+# Files API to upload CSV of holdings to Drive.
 files_api = drive_api_factory.build(ld.api.FilesApi)
 
 # Get holdings from Lusid API.
@@ -83,9 +87,11 @@ try:
         code = portfolio_code,
     )
 
+    print(f"Successfully retreived holdings for {portfolio_code} from LUSID.")
+
 except Exception as e:
     logger.debug(e)
-    logger.info("Holdings request failed.")
+    logger.info(f"Holdings request failed for portfolio code {portfolio_code}.")
 
 # Map each holding into it's own dictionary within the holding list.
 for return_holding in return_holdings.values:
@@ -112,7 +118,7 @@ for key, holding_dict in holdings.items():
     df = pd.concat([df, pd.DataFrame.from_dict(holding_dict)], ignore_index=True)
 
 # Convert dataframe to CSV string.
-body_data = df.to_csv(
+holdings_csv_body = df.to_csv(
     header = True,
     index = False,
     lineterminator = '\n',
@@ -123,8 +129,8 @@ try:
     create_file_result = files_api.create_file(
         x_lusid_drive_filename = f'{filename_prefix}' + datetime_string(datetime.datetime.now()) + '.csv',
         x_lusid_drive_path = f'{drive_path}/',
-        content_length = len(body_data),
-        body = body_data,
+        content_length = len(holdings_csv_body),
+        body = holdings_csv_body,
     )
 
     logger.info(create_file_result)
