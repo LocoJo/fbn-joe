@@ -1,0 +1,165 @@
+{
+    "id": {
+        "scope": "Demo_workflow_valuation",
+        "code": "Valuation"
+    },
+    "displayName": "Valuation",
+    "description": "Run a valuation of a portfolio perfoming validations and defaults if necessary on a set of dependencies first.",
+    "states": [
+        {
+            "name": "Initialised"
+        },
+        {
+            "name": "PendingDataQualityChecks"
+        },
+        {
+            "name": "PendingValuation"
+        },
+        {
+            "name": "Complete"
+        }
+    ],
+    "fieldSchema": [ 
+        {
+            "name": "portfolio_scope",
+            "type": "String"
+        },
+        {
+            "name": "portfolio_code",
+            "type": "String"
+        },
+        {
+            "name": "LUID",
+            "type": "String"
+        }
+    ],
+    "initialState": {
+        "name": "Initialised",
+        "requiredFields": [
+            "portfolio_scope",
+            "portfolio_code",
+            "LUID"
+        ]
+    },
+    "triggers": [
+        {
+            "name": "initial-trigger",
+            "trigger": {
+                "type": "External"
+            }
+        },
+        {
+            "name": "DataQualityChecks-Successful",
+            "trigger": {
+                "type": "External"
+            }
+        },
+        {
+            "name": "Valuation-Complete",
+            "trigger": {
+                "type": "External"
+            }
+        }
+    ],
+    "transitions": [
+        {
+            "fromState": "Initialised",
+            "toState": "PendingDataQualityChecks",
+            "trigger": "initial-trigger",
+            "action": "StartChildTasks-Validations"
+        },
+        {
+            "fromState": "PendingDataQualityChecks",
+            "toState": "PendingValuation",
+            "trigger": "DataQualityChecks-Successful",
+            "action": "StartWorker-Valuation"
+        },
+        {
+            "fromState": "PendingValuation",
+            "toState": "Complete",
+            "trigger": "Valuation-Complete"
+        }
+    ],
+    "actions": [
+        {
+            "name": "StartChildTasks-Validations",
+            "actionDetails": {
+                "type": "CreateChildTasks",
+                "childTaskConfigurations": [
+                    {
+                        "taskDefinitionId": {
+                            "scope": "Demo_workflow_valuation",
+                            "code": "Validation"
+                        },
+                        "childTaskFields": {
+                            "portfolio_scope": {
+                                "mapFrom": "portfolio_scope"
+                            },
+                            "portfolio_code": {
+                                "mapFrom": "portfolio_code"
+                            },
+                            "LUID": {
+                                "mapFrom": "LUID"
+                            },
+                            "validation_type": {
+                                "setTo": "Transaction"
+                            }
+                        },
+                        "initialTrigger": "initial-trigger"
+                    },
+                    {
+                        "taskDefinitionId": {
+                            "scope": "Demo_workflow_valuation",
+                            "code": "Validation"
+                        },
+                        "childTaskFields": {
+                            "portfolio_scope": {
+                                "mapFrom": "portfolio_scope"
+                            },
+                            "portfolio_code": {
+                                "mapFrom": "portfolio_code"
+                            },
+                            "LUID": {
+                                "mapFrom": "LUID"
+                            },
+                            "validation_type": {
+                                "setTo": "Quote"
+                            }
+                        },
+                        "initialTrigger": "initial-trigger"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "StartWorker-Valuation",
+            "actionDetails":  {
+                "type": "RunWorker",
+                "workerId": {
+                  "scope": "Demo_workflow_valuation",
+                  "code": "Valuation"
+                },
+                "workerStatusTriggers": {
+                  "failedToStart": "Valuation-Error",
+                  "failedToComplete": "Valuation-Error",
+                  "completedWithResults": "Valuation-Complete",
+                  "completedNoResults": "Valuation-Error"
+                },
+                "workerParameters": {
+                 "LUID": {
+                   "MapFrom": "LUID",
+                   "SetTo": null
+                 },
+                 "portfolio_scope": {
+                   "MapFrom": "portfolio_scope",
+                   "SetTo": null
+                 },
+                 "portfolio_code": {
+                   "MapFrom": "portfolio_code",
+                   "SetTo": null
+                 }
+                }
+              }
+        }
+    ]
+}

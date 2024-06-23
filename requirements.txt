@@ -2,3 +2,4 @@ pandas==2.2.2
 lusid-drive-sdk-preview==0.1.642
 lusid-sdk-preview
 lusid-jam
+lusid-workflow-sdk-preview 
