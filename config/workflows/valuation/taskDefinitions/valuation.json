@@ -49,13 +49,19 @@
             }
         },
         {
-            "name": "DataQualityChecks-Successful",
+            "name": "DataQualityChecks-Complete",
             "trigger": {
                 "type": "External"
             }
         },
         {
             "name": "Valuation-Complete",
+            "trigger": {
+                "type": "External"
+            }
+        },
+        {
+            "name": "Valuation-Error",
             "trigger": {
                 "type": "External"
             }
@@ -66,12 +72,12 @@
             "fromState": "Initialised",
             "toState": "PendingDataQualityChecks",
             "trigger": "initial-trigger",
-            "action": "StartChildTasks-Validations"
+            "action": "StartChildTasks-DataQuality"
         },
         {
             "fromState": "PendingDataQualityChecks",
             "toState": "PendingValuation",
-            "trigger": "DataQualityChecks-Successful",
+            "trigger": "DataQualityChecks-Complete",
             "action": "StartWorker-Valuation"
         },
         {
@@ -82,14 +88,14 @@
     ],
     "actions": [
         {
-            "name": "StartChildTasks-Validations",
+            "name": "StartChildTasks-DataQuality",
             "actionDetails": {
                 "type": "CreateChildTasks",
                 "childTaskConfigurations": [
                     {
                         "taskDefinitionId": {
                             "scope": "Demo_workflow_valuation",
-                            "code": "Validation"
+                            "code": "TxnValidation"
                         },
                         "childTaskFields": {
                             "portfolio_scope": {
@@ -100,9 +106,6 @@
                             },
                             "LUID": {
                                 "mapFrom": "LUID"
-                            },
-                            "validation_type": {
-                                "setTo": "Transaction"
                             }
                         },
                         "initialTrigger": "initial-trigger"
@@ -110,7 +113,7 @@
                     {
                         "taskDefinitionId": {
                             "scope": "Demo_workflow_valuation",
-                            "code": "Validation"
+                            "code": "QuoteValidation"
                         },
                         "childTaskFields": {
                             "portfolio_scope": {
@@ -121,9 +124,6 @@
                             },
                             "LUID": {
                                 "mapFrom": "LUID"
-                            },
-                            "validation_type": {
-                                "setTo": "Quote"
                             }
                         },
                         "initialTrigger": "initial-trigger"
@@ -146,18 +146,18 @@
                   "completedNoResults": "Valuation-Error"
                 },
                 "workerParameters": {
-                 "LUID": {
-                   "MapFrom": "LUID",
-                   "SetTo": null
-                 },
-                 "portfolio_scope": {
-                   "MapFrom": "portfolio_scope",
-                   "SetTo": null
-                 },
-                 "portfolio_code": {
-                   "MapFrom": "portfolio_code",
-                   "SetTo": null
-                 }
+                    "portfolio_scope": {
+                        "MapFrom": "portfolio_scope",
+                        "SetTo": null
+                    },
+                    "portfolio_code": {
+                        "MapFrom": "portfolio_code",
+                        "SetTo": null
+                    },
+                    "LUID": {
+                        "MapFrom": "LUID",
+                        "SetTo": null
+                    }
                 }
               }
         }

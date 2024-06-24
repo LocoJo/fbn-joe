@@ -1,0 +1,12 @@
+{
+    "id": {
+      "scope": "Demo_workflow_valuation",
+      "code": "Valuation"
+    },
+    "displayName": "Perform Valuation of Instrument",
+    "description": "Worker that performs a valuation of an instrument.",
+    "workerConfiguration": {
+      "type": "LuminesceView",
+      "name": "Worker.InstrumentValuation"
+    }
+}

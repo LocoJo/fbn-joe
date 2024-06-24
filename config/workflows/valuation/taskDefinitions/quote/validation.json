@@ -1,0 +1,112 @@
+{
+    "id": {
+        "scope": "Demo_workflow_valuation",
+        "code": "QuoteValidation"
+    },
+    "displayName": "Quote Validation",
+    "description": "Validate quote data.",
+    "states": [
+        {
+            "name": "Initialised"
+        },
+        {
+            "name": "PendingValidation"
+        },
+        {
+            "name": "Complete"
+        }
+    ],
+    "fieldSchema": [ 
+        {
+            "name": "portfolio_scope",
+            "type": "String"
+        },
+        {
+            "name": "portfolio_code",
+            "type": "String"
+        },
+        {
+            "name": "LUID",
+            "type": "String"
+        }
+    ],
+    "initialState": {
+        "name": "Initialised",
+        "requiredFields": [
+            "portfolio_scope",
+            "portfolio_code",
+            "LUID"
+        ]
+    },
+    "triggers": [
+        {
+            "name": "initial-trigger",
+            "trigger": {
+                "type": "External"
+            }
+        },
+        {
+            "name": "Validation-Complete",
+            "trigger": {
+                "type": "External"
+            }
+        },
+        {
+            "name": "Validation-Error",
+            "trigger": {
+                "type": "External"
+            }
+        },
+        {
+            "name": "Validation-Exception",
+            "trigger": {
+                "type": "External"
+            }
+        }
+    ],
+    "transitions": [
+        {
+            "fromState": "Initialised",
+            "toState": "PendingValidation",
+            "trigger": "initial-trigger",
+            "action": "StartWorker-Validation"
+        },
+        {
+            "fromState": "PendingValidation",
+            "toState": "Complete",
+            "trigger": "Validation-Complete"
+        }
+    ],
+    "actions": [
+        {
+            "name": "StartWorker-Validation",
+            "actionDetails":  {
+                "type": "RunWorker",
+                "workerId": {
+                  "scope": "Demo_workflow_valuation",
+                  "code": "QuoteValidation"
+                },
+                "workerStatusTriggers": {
+                  "failedToStart": "Validation-Error",
+                  "failedToComplete": "Validation-Error",
+                  "completedWithResults": "Validation-Exception",
+                  "completedNoResults": "Validation-Complete"
+                },
+                "workerParameters": {
+                    "portfolio_scope": {
+                        "MapFrom": "portfolio_scope",
+                        "SetTo": null
+                    },
+                    "portfolio_code": {
+                        "MapFrom": "portfolio_code",
+                        "SetTo": null
+                    },
+                    "LUID": {
+                        "MapFrom": "LUID",
+                        "SetTo": null
+                    }
+                }
+            }
+        }
+    ]
+}

@@ -1,0 +1,12 @@
+{
+    "id": {
+      "scope": "Demo_workflow_valuation",
+      "code": "TxnValidation"
+    },
+    "displayName": "Perform Validation of Instrument Transactions",
+    "description": "Worker that checks for transactions on an instrument.",
+    "workerConfiguration": {
+      "type": "LuminesceView",
+      "name": "Worker.InstrumentTxnValidation"
+    }
+}
