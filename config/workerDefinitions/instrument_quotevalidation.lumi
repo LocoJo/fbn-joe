@@ -1,0 +1,27 @@
+@x = use Sys.Admin.SetupView
+--provider=Worker.InstrumentQuoteValidation
+--parameters
+portfolio_scope,Text,Demo2,true
+portfolio_code,Text,JC_UK,true
+LUID,Text,LUID_00003D9J,true
+----
+
+@@portfolio_scope = select #PARAMETERVALUE(portfolio_scope);
+@@portfolio_code = select #PARAMETERVALUE(portfolio_code);
+@@LUID = select #PARAMETERVALUE(LUID);
+
+-- Need to do some pivoting and then join or select from instrument table too.
+-- Proably pivot the symbology identifiers into rows from instrument table and then do inner join to quotes filtering on type.
+-- join on multiple columns:
+-- https://www.interviewquery.com/p/sql-join-on-multiple-columns
+
+-- Arbitrary placeholder, will be overwritted.
+SELECT 
+    Provider,
+    PriceSource
+FROM Lusid.Instrument.Quote
+LIMIT 20;
+
+enduse;
+
+select * from @x
