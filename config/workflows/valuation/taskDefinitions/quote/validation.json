@@ -18,14 +18,6 @@
     ],
     "fieldSchema": [ 
         {
-            "name": "portfolio_scope",
-            "type": "String"
-        },
-        {
-            "name": "portfolio_code",
-            "type": "String"
-        },
-        {
             "name": "LUID",
             "type": "String"
         }
@@ -33,8 +25,6 @@
     "initialState": {
         "name": "Initialised",
         "requiredFields": [
-            "portfolio_scope",
-            "portfolio_code",
             "LUID"
         ]
     },
@@ -93,19 +83,25 @@
                   "completedNoResults": "Validation-Complete"
                 },
                 "workerParameters": {
-                    "portfolio_scope": {
-                        "MapFrom": "portfolio_scope",
-                        "SetTo": null
-                    },
-                    "portfolio_code": {
-                        "MapFrom": "portfolio_code",
-                        "SetTo": null
-                    },
                     "LUID": {
                         "MapFrom": "LUID",
                         "SetTo": null
                     }
-                }
+                },
+                "childTaskConfigurations": [
+                    {
+                        "taskDefinitionId": {
+                            "scope": "Demo_workflow_valuation",
+                            "code": "QuoteExceptionHander"
+                        },
+                        "initialTrigger": "initial-trigger",
+                        "childTaskFields": {
+                            "LUID": {
+                                "mapFrom": "LUID"
+                            }
+                        }
+                    }
+                ]
             }
         }
     ]

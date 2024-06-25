@@ -1,16 +1,16 @@
 {
     "id": {
         "scope": "Demo_workflow_valuation",
-        "code": "TxnValidation"
+        "code": "TxnExceptionHander"
     },
-    "displayName": "Transaction Validation",
-    "description": "Validate transaction data.",
+    "displayName": "Transaction Exception Handler",
+    "description": "Handle exceptions raised by txn validation worker.",
     "states": [
         {
             "name": "Initialised"
         },
         {
-            "name": "PendingValidation"
+            "name": "PendingDefaulting"
         },
         {
             "name": "Complete"
@@ -46,19 +46,13 @@
             }
         },
         {
-            "name": "Validation-Complete",
+            "name": "ExceptionHandling-Complete",
             "trigger": {
                 "type": "External"
             }
         },
         {
-            "name": "Validation-Error",
-            "trigger": {
-                "type": "External"
-            }
-        },
-        {
-            "name": "Validation-Exception",
+            "name": "ExceptionHandling-Error",
             "trigger": {
                 "type": "External"
             }
@@ -67,30 +61,30 @@
     "transitions": [
         {
             "fromState": "Initialised",
-            "toState": "PendingValidation",
+            "toState": "PendingDefaulting",
             "trigger": "initial-trigger",
-            "action": "StartWorker-Validation"
+            "action": "StartWorker-TxnDefaulter"
         },
         {
-            "fromState": "PendingValidation",
+            "fromState": "PendingDefaulting",
             "toState": "Complete",
-            "trigger": "Validation-Complete"
+            "trigger": "ExceptionHandling-Complete"
         }
     ],
     "actions": [
         {
-            "name": "StartWorker-Validation",
-            "actionDetails":  {
+            "name": "StartWorker-TxnDefaulter",
+            "actionDetails": {
                 "type": "RunWorker",
                 "workerId": {
-                  "scope": "Demo_workflow_valuation",
-                  "code": "TxnValidation"
+                    "scope": "Demo_workflow_valuation",
+                    "code": "TxnDefaulter"
                 },
                 "workerStatusTriggers": {
-                  "failedToStart": "Validation-Error",
-                  "failedToComplete": "Validation-Error",
-                  "completedWithResults": "Validation-Exception",
-                  "completedNoResults": "Validation-Complete"
+                    "failedToStart": "ExceptionHandling-Error",
+                    "failedToComplete": "ExceptionHandling-Error",
+                    "completedWithResults": "ExceptionHandling-Complete",
+                    "completedNoResults": "ExceptionHandling-Error"
                 },
                 "workerParameters": {
                     "portfolio_scope": {
@@ -105,27 +99,7 @@
                         "MapFrom": "LUID",
                         "SetTo": null
                     }
-                },
-                "childTaskConfigurations": [
-                    {
-                        "taskDefinitionId": {
-                            "scope": "Demo_workflow_valuation",
-                            "code": "TxnExceptionHander"
-                        },
-                        "initialTrigger": "initial-trigger",
-                        "childTaskFields": {
-                            "portfolio_scope": {
-                                "mapFrom": "portfolio_scope"
-                            },
-                            "portfolio_code": {
-                                "mapFrom": "portfolio_code"
-                            },
-                            "LUID": {
-                                "mapFrom": "LUID"
-                            }
-                        }
-                    }
-                ]
+                }
             }
         }
     ]

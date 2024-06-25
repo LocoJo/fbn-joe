@@ -116,12 +116,6 @@
                             "code": "QuoteValidation"
                         },
                         "childTaskFields": {
-                            "portfolio_scope": {
-                                "mapFrom": "portfolio_scope"
-                            },
-                            "portfolio_code": {
-                                "mapFrom": "portfolio_code"
-                            },
                             "LUID": {
                                 "mapFrom": "LUID"
                             }

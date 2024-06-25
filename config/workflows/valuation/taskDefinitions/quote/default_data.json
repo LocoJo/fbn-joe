@@ -1,0 +1,88 @@
+{
+    "id": {
+        "scope": "Demo_workflow_valuation",
+        "code": "QuoteExceptionHander"
+    },
+    "displayName": "Quote Exception Handler",
+    "description": "Handle exceptions raised by quote validation worker.",
+    "states": [
+        {
+            "name": "Initialised"
+        },
+        {
+            "name": "PendingDefaulting"
+        },
+        {
+            "name": "Complete"
+        }
+    ],
+    "fieldSchema": [ 
+        {
+            "name": "LUID",
+            "type": "String"
+        }
+    ],
+    "initialState": {
+        "name": "Initialised",
+        "requiredFields": [
+            "LUID"
+        ]
+    },
+    "triggers": [
+        {
+            "name": "initial-trigger",
+            "trigger": {
+                "type": "External"
+            }
+        },
+        {
+            "name": "ExceptionHandling-Complete",
+            "trigger": {
+                "type": "External"
+            }
+        },
+        {
+            "name": "ExceptionHandling-Error",
+            "trigger": {
+                "type": "External"
+            }
+        }
+    ],
+    "transitions": [
+        {
+            "fromState": "Initialised",
+            "toState": "PendingDefaulting",
+            "trigger": "initial-trigger",
+            "action": "StartWorker-QuoteDefaulter"
+        },
+        {
+            "fromState": "PendingDefaulting",
+            "toState": "Complete",
+            "trigger": "ExceptionHandling-Complete"
+        }
+    ],
+    "actions": [
+        {
+            "name": "StartWorker-QuoteDefaulter",
+            "actionDetails": {
+                "type": "RunWorker",
+                "workerId": {
+                    "scope": "Demo_workflow_valuation",
+                    "code": "QuoteDefaulter"
+                },
+                "workerStatusTriggers": {
+                    "failedToStart": "ExceptionHandling-Error",
+                    "failedToComplete": "ExceptionHandling-Error",
+                    "completedWithResults": "ExceptionHandling-Complete",
+                    "completedNoResults": "ExceptionHandling-Error"
+                },
+                "workerParameters": {
+                    "LUID": {
+                        "MapFrom": "LUID",
+                        "SetTo": null
+                    }
+                }
+            }
+        }
+    ]
+}
