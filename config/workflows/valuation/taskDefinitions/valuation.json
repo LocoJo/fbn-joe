@@ -49,7 +49,7 @@
             }
         },
         {
-            "name": "DataQualityChecks-Complete",
+            "name": "DataQualityCheck-Complete",
             "trigger": {
                 "type": "External"
             }
@@ -77,8 +77,9 @@
         {
             "fromState": "PendingDataQualityChecks",
             "toState": "PendingValuation",
-            "trigger": "DataQualityChecks-Complete",
-            "action": "StartWorker-Valuation"
+            "trigger": "DataQualityCheck-Complete",
+            "action": "StartWorker-Valuation",
+            "guard": "childTasks all (state eq 'Complete')"
         },
         {
             "fromState": "PendingValuation",

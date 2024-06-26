@@ -121,6 +121,13 @@
                     }
                 ]
             }
+        },
+        {
+            "name": "TriggerParent-ValidationComplete",
+            "actionDetails": {
+                "type": "TriggerParentTask",
+                "trigger": "DataQualityCheck-Complete"
+            }
         }
     ]
 }

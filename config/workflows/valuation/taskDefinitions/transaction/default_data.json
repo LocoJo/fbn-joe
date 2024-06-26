@@ -105,6 +105,13 @@
                     }
                 }
             }
+        },
+        {
+            "name": "TriggerParent-DefaultingComplete",
+            "actionDetails": {
+                "type": "TriggerParentTask",
+                "trigger": "Validation-Complete"
+            }
         }
     ]
 }
