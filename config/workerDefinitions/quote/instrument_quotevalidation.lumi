@@ -3,12 +3,12 @@
 --parameters
 portfolio_scope,Text,Demo2,true
 portfolio_code,Text,JC_UK,true
-LUID,Text,LUID_00003D9J,true
+LusidInstrumentID,Text,LUID_00003D9J,true
 ----
 
 @@portfolio_scope = select #PARAMETERVALUE(portfolio_scope);
 @@portfolio_code = select #PARAMETERVALUE(portfolio_code);
-@@LUID = select #PARAMETERVALUE(LUID);
+@@LusidInstrumentID = select #PARAMETERVALUE(LusidInstrumentID);
 
 -- Need to do some pivoting and then join or select from instrument table too.
 -- Proably pivot the symbology identifiers into rows from instrument table and then do inner join to quotes filtering on type.
@@ -18,7 +18,7 @@ LUID,Text,LUID_00003D9J,true
 -- Arbitrary placeholder, will be overwritted.
 SELECT 
     Provider,
-    PriceSource
+    PriceSource AS LUID
 FROM Lusid.Instrument.Quote
 LIMIT 20;
 

@@ -1,0 +1,12 @@
+{
+    "id": {
+      "scope": "Demo_workflow_valuation",
+      "code": "QuoteDefaulter"
+    },
+    "displayName": "Perform Defaulting of Instrument Quotes",
+    "description": "Worker that defaults quotes on an instrument.",
+    "workerConfiguration": {
+      "type": "LuminesceView",
+      "name": "Worker.InstrumentQuoteDefault"
+    }
+}

@@ -83,7 +83,7 @@
                   "completedNoResults": "Validation-Complete"
                 },
                 "workerParameters": {
-                    "LUID": {
+                    "LusidInstrumentID": {
                         "MapFrom": "LUID",
                         "SetTo": null
                     }
@@ -96,8 +96,8 @@
                         },
                         "initialTrigger": "initial-trigger",
                         "childTaskFields": {
-                            "LUID": {
-                                "mapFrom": "LUID"
+                            "DataType": {
+                                "SetTo": "Quote"
                             }
                         }
                     }

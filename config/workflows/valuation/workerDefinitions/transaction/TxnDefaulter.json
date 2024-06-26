@@ -1,0 +1,12 @@
+{
+  "id": {
+    "scope": "Demo_workflow_valuation",
+    "code": "TxnDefaulter"
+  },
+  "displayName": "Perform Defaulting of Instrument Transactions",
+  "description": "Worker that defaults transactions on an instrument.",
+  "workerConfiguration": {
+    "type": "LuminesceView",
+    "name": "Worker.InstrumentTxnDefault"
+  }
+}

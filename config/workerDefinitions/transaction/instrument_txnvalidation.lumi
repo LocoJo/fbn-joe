@@ -1,0 +1,23 @@
+@x = use Sys.Admin.SetupView
+--provider=Worker.InstrumentTxnValidation
+--parameters
+PortfolioScope,Text,Demo2,true
+PortfolioCode,Text,JC_UK,true
+LusidInstrumentID,Text,LUID_00003D9J,true
+----
+
+@@PortfolioScope = select #PARAMETERVALUE(PortfolioScope);
+@@portfolio_code = select #PARAMETERVALUE(PortfolioCode);
+@@LusidInstrumentId = select #PARAMETERVALUE(LusidInstrumentID);
+
+-- Arbitrary placeholder, will be overwritted.
+SELECT 
+    'PLACEHOLDER' AS LUID,
+    TxnId AS portfolio_scope,
+    'PLACEHOLDER' AS portfolio_code
+FROM Lusid.Portfolio.Txn
+LIMIT 20;
+
+enduse;
+
+select * from @x
