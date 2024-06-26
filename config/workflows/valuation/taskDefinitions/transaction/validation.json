@@ -74,7 +74,8 @@
         {
             "fromState": "PendingValidation",
             "toState": "Complete",
-            "trigger": "Validation-Complete"
+            "trigger": "Validation-Complete",
+            "guard": "childTasks all (state eq 'Complete')"
         }
     ],
     "actions": [

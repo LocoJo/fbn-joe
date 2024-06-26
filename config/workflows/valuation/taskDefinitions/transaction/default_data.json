@@ -72,7 +72,8 @@
         {
             "fromState": "PendingDefaulting",
             "toState": "Complete",
-            "trigger": "ExceptionHandling-Complete"
+            "trigger": "ExceptionHandling-Complete",
+            "action": "TriggerParent-DefaultingComplete"
         }
     ],
     "actions": [
