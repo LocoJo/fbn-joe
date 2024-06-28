@@ -1,27 +1,40 @@
+/*
+Worker to validate quotes exist for a given LUID.
+
+Returns records if no txns exist.
+
+Test LUID should have no quotes: LUID_00003D9N
+Tets LUID should have quotes LUID_00003D9J
+*/
+
 @x = use Sys.Admin.SetupView
 --provider=Worker.InstrumentQuoteValidation
+--useDryRun
 --parameters
-portfolio_scope,Text,Demo2,true
-portfolio_code,Text,JC_UK,true
-LusidInstrumentID,Text,LUID_00003D9J,true
+LusidInstrumentID,Text,LUID_00003D9N,true
 ----
 
-@@portfolio_scope = select #PARAMETERVALUE(portfolio_scope);
-@@portfolio_code = select #PARAMETERVALUE(portfolio_code);
-@@LusidInstrumentID = select #PARAMETERVALUE(LusidInstrumentID);
+/*
+Setup definitions
+*/
 
--- Need to do some pivoting and then join or select from instrument table too.
--- Proably pivot the symbology identifiers into rows from instrument table and then do inner join to quotes filtering on type.
--- join on multiple columns:
--- https://www.interviewquery.com/p/sql-join-on-multiple-columns
+@@lusid_instrument_id = select #PARAMETERVALUE(LusidInstrumentID);
+--@@lusid_instrument_id = select 'LUID_00003D9N';
 
--- Arbitrary placeholder, will be overwritted.
-SELECT 
-    Provider,
-    PriceSource AS LUID
-FROM Lusid.Instrument.Quote
-LIMIT 20;
+-- Not optimal, ideally would like to pivot instrment identifiers from li table into columns similar to liq 
+-- and then do a multiple join on insturment id and id type, so all records are captured.
+-- But doing this quick solution for POC workflow.
+SELECT
+    li.LusidInstrumentId AS LUID
+FROM [Lusid.Instrument] li
+LEFT JOIN Lusid.Instrument.Quote liq
+ON li.Isin = liq.InstrumentId
+--WHERE liq.InstrumentIdType = 'Isin'
+WHERE li.LusidInstrumentId = @@lusid_instrument_id
+AND liq.InstrumentId IS Null;
 
 enduse;
 
-select * from @x
+-- Returns records if they need to be handled by defaulter.
+SELECT *
+FROM @x
