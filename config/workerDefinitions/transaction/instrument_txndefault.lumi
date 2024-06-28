@@ -1,22 +1,57 @@
+/*
+Worker to default txns in lusid.
+
+Should return results on success.
+
+Test LUID should have no txns on any portfolios: LUID_00003D9N
+Tets LUID should have txns on any portfolio Demo2/JC_UK LUID_00003D9J
+*/
+
 @x = use Sys.Admin.SetupView
 --provider=Worker.InstrumentTxnDefault
+--useDryRun
 --parameters
-portfolio_scope,Text,Demo2,true
-portfolio_code,Text,JC_UK,true
-LusidInstrumentID,Text,LUID_00003D9J,true
+PortfolioScope,Text,Demo2,true
+PortfolioCode,Text,JC_UK,true
+LusidInstrumentID,Text,LUID_00003D9N,true
 ----
 
-@@portfolio_scope = select #PARAMETERVALUE(portfolio_scope);
-@@portfolio_code = select #PARAMETERVALUE(portfolio_code);
-@@LUID = select #PARAMETERVALUE(LusidInstrumentID);
+/*
+Setup definitions
+*/
 
--- Arbitrary placeholder, will be overwritted.
-SELECT 
-    LusidInstrumentId AS LUID,
-    TxnId
-FROM Lusid.Portfolio.Txn
-LIMIT 20;
+--@@lusid_instrument_id = select #PARAMETERVALUE(LusidInstrumentID);
+@@lusid_instrument_id = select 'LUID_00003D9N';
+@@portfolio_code = SELECT 'JC_UK';
+@@portfolio_scope = SELECT 'Demo2';
+
+@txn_to_default = SELECT
+    'default' AS InstrumentScope,
+    @@lusid_instrument_id AS LusidInstrumentId,
+    @@portfolio_code AS PortfolioCode,
+    @@portfolio_scope AS PortfolioScope,
+    'GBP' AS TradeCurrency,
+    'GBP' AS SettlementCurrency,
+    100 AS TracePrice,
+    'Price' AS TradePriceType,
+    1 AS TradeToPortfolioRate,
+    #2024-06-25# AS TransactionDate,
+    #2024-06-27# AS SettlementDate,
+    'JC-001' AS TxnId,
+    'Buy' AS Type,
+    100000 AS Units;
+
+select
+    WriteAction,
+    WriteAsAt,
+    WriteErrorCode,
+    WriteError,
+    WriteErrorDetail
+from Lusid.Portfolio.Txn.Writer
+where toWrite = @txn_to_default;
 
 enduse;
 
-select * from @x
+-- Returns records if they need to be handled by defaulter.
+SELECT *
+FROM @x
