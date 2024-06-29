@@ -1,19 +1,90 @@
+
+/*
+Worker to perform valuation on specific instrument on LUSID.
+
+Should return results on success.
+
+Test LUID should have no txns on any portfolios: LUID_00003D9N
+Tets LUID should have txns on any portfolio Demo2/JC_UK LUID_00003D9J
+*/
+
 @x = use Sys.Admin.SetupView
 --provider=Worker.InstrumentValuation
 --parameters
-portfolio_scope,Text,Demo2,true
-portfolio_code,Text,JC_UK,true
-LUID,Text,LUID_00003D9J,true
+PortfolioScope,Text,Demo2,true
+PortfolioCode,Text,JC_UK,true
+LusidInstrumentID,Text,LUID_00003D9N,true
 ----
 
-@@portfolio_scope = select #PARAMETERVALUE(portfolio_scope);
-@@portfolio_code = select #PARAMETERVALUE(portfolio_code);
-@@LUID = select #PARAMETERVALUE(LUID);
+/*
+Setup definitions
+*/
 
--- Arbitrary placeholder, will be overwritted.
-SELECT PortfolioScope
-FROM Lusid.Portfolio.Txn
+@@portfolio_scope = select #PARAMETERVALUE(PortfolioScope);
+@@portfolio_code = select #PARAMETERVALUE(PortfolioCode);
+@@lusid_instrument_id = select #PARAMETERVALUE(LusidInstrumentID);
+
+/*
+@@lusid_instrument_id = select 'LUID_00003D9N';
+@@portfolio_code = SELECT 'JC_UK';
+@@portfolio_scope = SELECT 'Demo2';
+*/
+
+@@recipe = SELECT 'Demo2/standard-recipe';
+
+@@keysToGroupBy = SELECT
+'Analytic/default/ValuationDate,' ||
+'Instrument/default/LusidInstrumentId';
+
+@metrics = VALUES
+('Holding/Units', 'Value'),
+('Valuation/PvInPortfolioCcy', 'Value');
+--('Instrument/default/LusidInstrumentId', 'Value');
+
+@metrics_formatted = SELECT
+    column1 AS MeasureName,
+    column2 AS Operation
+FROM @metrics;
+
+@valuation_unpivoted = SELECT
+    PortfolioCode,
+    LusidInstrumentId,
+    MeasureName,
+    CASE
+        WHEN MeasureStringValue IS NOT NULL THEN
+            MeasureStringValue
+        WHEN MeasureDecimalValue IS NOT NULL THEN
+            MeasureDecimalValue
+        ELSE
+            MeasureDateTimeValue
+    END AS MeasureValue,
+GroupedBy
+FROM [Lusid.Portfolio.Valuation]
+WHERE PortfolioCode = @@portfolio_code
+AND PortfolioScope = @@portfolio_scope
+AND Recipe = @@recipe
+AND MeasuresToReturn = @metrics_formatted
+AND KeysToGroupBy = @@keysToGroupBy
+AND LusidInstrumentId = @@lusid_instrument_id;
+
+@valuation_pivoted = use Tools.Pivot with @valuation_unpivoted
+--key=MeasureName
+--aggregateColumns=MeasureValue
+enduse;
+
+@report = SELECT
+    [PortfolioCode],
+    LusidInstrumentId,
+    [Valuation/PVInPortfolioCcy] AS LUIDValuation
+FROM @valuation_pivoted;
+
+SELECT
+    [LUIDValuation]
+FROM @report;
+
+-- Write to instrument property provider here to set the new insturment property value amonut and datetime properties for given LUID. 
 
 enduse;
 
-select * from @x
+SELECT *
+FROM @x;
