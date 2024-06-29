@@ -78,8 +78,7 @@
             "fromState": "PendingDataQualityChecks",
             "toState": "PendingValuation",
             "trigger": "DataQualityCheck-Complete",
-            "action": "StartWorker-Valuation",
-            "guard": "childTasks all (state eq 'Complete')"
+            "action": "StartWorker-Valuation"
         },
         {
             "fromState": "PendingValuation",
