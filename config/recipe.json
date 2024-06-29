@@ -11,8 +11,7 @@
                     "dataScope": "Demo2",
                     "quoteType": "Price",
                     "field": "mid",
-                    "priceSource": "Client",
-                    "sourceSystem": "Lusid"
+                    "quoteInterval": "1W.0D"
                 }
             ],
             "suppliers": {},
