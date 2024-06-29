@@ -11,6 +11,52 @@
                     "dataScope": "Demo2",
                     "quoteType": "Price",
                     "field": "mid",
+                    "priceSource": "Client",
+                    "quoteInterval": "1W.0D"
+                },
+                {
+                    "key": "Quote.Isin.*",
+                    "supplier": "Client",
+                    "dataScope": "Demo2",
+                    "quoteType": "Price",
+                    "field": "bid",
+                    "priceSource": "Client",
+                    "quoteInterval": "1W.0D"
+                },
+                {
+                    "key": "Quote.Isin.*",
+                    "supplier": "Client",
+                    "dataScope": "Demo2",
+                    "quoteType": "Price",
+                    "field": "ask",
+                    "priceSource": "Client",
+                    "quoteInterval": "1W.0D"
+                },
+                {
+                    "key": "Quote.Figi.*",
+                    "supplier": "Client",
+                    "dataScope": "Demo2",
+                    "quoteType": "Price",
+                    "field": "mid",
+                    "priceSource": "Client",
+                    "quoteInterval": "1W.0D"
+                },
+                {
+                    "key": "Quote.Figi.*",
+                    "supplier": "Client",
+                    "dataScope": "Demo2",
+                    "quoteType": "Price",
+                    "field": "bid",
+                    "priceSource": "Client",
+                    "quoteInterval": "1W.0D"
+                },
+                {
+                    "key": "Quote.Figi.*",
+                    "supplier": "Client",
+                    "dataScope": "Demo2",
+                    "quoteType": "Price",
+                    "field": "ask",
+                    "priceSource": "Client",
                     "quoteInterval": "1W.0D"
                 }
             ],
