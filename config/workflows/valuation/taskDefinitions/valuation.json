@@ -149,7 +149,7 @@
                         "MapFrom": "portfolio_code",
                         "SetTo": null
                     },
-                    "LUID": {
+                    "LusidInstrumentID": {
                         "MapFrom": "LUID",
                         "SetTo": null
                     }
