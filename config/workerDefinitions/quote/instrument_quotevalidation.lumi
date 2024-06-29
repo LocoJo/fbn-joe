@@ -26,15 +26,20 @@ Setup definitions
 -- But doing this quick solution for POC workflow.
 SELECT
     li.LusidInstrumentId AS LUID
-FROM [Lusid.Instrument] li
+FROM
+    [Lusid.Instrument] li
 LEFT JOIN Lusid.Instrument.Quote liq
-ON li.Isin = liq.InstrumentId
---WHERE liq.InstrumentIdType = 'Isin'
-WHERE li.LusidInstrumentId = @@lusid_instrument_id
-AND liq.InstrumentId IS Null;
+    ON li.Isin = liq.InstrumentId
+WHERE
+    li.LusidInstrumentId = @@lusid_instrument_id
+    AND date('now', '-7 day') <=  date(liq.QuoteEffectiveAt) 
+    AND date(liq.QuoteEffectiveAt) <= date('now')
+    AND liq.InstrumentId IS Null;
 
 enduse;
 
 -- Returns records if they need to be handled by defaulter.
-SELECT *
-FROM @x
+SELECT
+    *
+FROM
+    @x
