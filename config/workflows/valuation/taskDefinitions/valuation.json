@@ -10,7 +10,10 @@
             "name": "Initialised"
         },
         {
-            "name": "PendingDataQualityChecks"
+            "name": "PendingTxnValidation"
+        },
+        {
+            "name": "PendingQuoteValidation"
         },
         {
             "name": "PendingValuation"
@@ -19,7 +22,7 @@
             "name": "Complete"
         }
     ],
-    "fieldSchema": [ 
+    "fieldSchema": [
         {
             "name": "portfolio_scope",
             "type": "String"
@@ -49,7 +52,13 @@
             }
         },
         {
-            "name": "DataQualityCheck-Complete",
+            "name": "TxnValidation-Complete",
+            "trigger": {
+                "type": "External"
+            }
+        },
+        {
+            "name": "QuoteValidation-Complete",
             "trigger": {
                 "type": "External"
             }
@@ -70,14 +79,20 @@
     "transitions": [
         {
             "fromState": "Initialised",
-            "toState": "PendingDataQualityChecks",
+            "toState": "PendingTxnValidation",
             "trigger": "initial-trigger",
-            "action": "StartChildTasks-DataQuality"
+            "action": "StartChildTasks-TxnValidation"
         },
         {
-            "fromState": "PendingDataQualityChecks",
+            "fromState": "PendingTxnValidation",
+            "toState": "PendingQuoteValidation",
+            "trigger": "TxnValidation-Complete",
+            "action": "StartChildTasks-QuoteValidation"
+        },
+        {
+            "fromState": "PendingQuoteValidation",
             "toState": "PendingValuation",
-            "trigger": "DataQualityCheck-Complete",
+            "trigger": "QuoteValidation-Complete",
             "action": "StartWorker-Valuation"
         },
         {
@@ -88,7 +103,7 @@
     ],
     "actions": [
         {
-            "name": "StartChildTasks-DataQuality",
+            "name": "StartChildTasks-TxnValidation",
             "actionDetails": {
                 "type": "CreateChildTasks",
                 "childTaskConfigurations": [
@@ -109,7 +124,15 @@
                             }
                         },
                         "initialTrigger": "initial-trigger"
-                    },
+                    }
+                ]
+            }
+        },
+        {
+            "name": "StartChildTasks-QuoteValidation",
+            "actionDetails": {
+                "type": "CreateChildTasks",
+                "childTaskConfigurations": [
                     {
                         "taskDefinitionId": {
                             "scope": "Demo_workflow_valuation",

@@ -75,7 +75,7 @@
             "fromState": "PendingValidation",
             "toState": "Complete",
             "trigger": "Validation-Complete",
-            "guard": "childTasks all (state eq 'Complete')"
+            "action": "TriggerParent-ValidationComplete"
         }
     ],
     "actions": [
@@ -115,8 +115,14 @@
                         },
                         "initialTrigger": "initial-trigger",
                         "childTaskFields": {
-                            "DataType": {
-                                "SetTo": "Txn"
+                            "portfolio_scope": {
+                                "mapFrom": "portfolio_scope"
+                            },
+                            "portfolio_code": {
+                                "mapFrom": "portfolio_code"
+                            },
+                            "LUID": {
+                                "mapFrom": "LUID"
                             }
                         }
                     }
@@ -127,7 +133,7 @@
             "name": "TriggerParent-ValidationComplete",
             "actionDetails": {
                 "type": "TriggerParentTask",
-                "trigger": "DataQualityCheck-Complete"
+                "trigger": "TxnValidation-Complete"
             }
         }
     ]

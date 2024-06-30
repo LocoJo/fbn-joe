@@ -28,10 +28,6 @@
         {
             "name": "LUID",
             "type": "String"
-        },
-        {
-            "name": "DataType",
-            "type": "String"
         }
     ],
     "initialState": {
