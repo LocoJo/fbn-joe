@@ -1,3 +1,14 @@
 {
-    
+    "domain": "Instrument",
+    "scope": "Demo2 ",
+    "code": "LastValuationDatetime",
+    "valueRequired": false,
+    "displayName": "Last Valuation Datetime",
+    "dataTypeId": {
+      "scope": "system",
+      "code": "date"
+    },
+    "lifeTime": "TimeVariant",
+    "constraintStyle": "Property",
+    "propertyDescription": "Last Valuation Datetime"
 }

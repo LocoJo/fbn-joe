@@ -1,0 +1,14 @@
+{
+    "domain": "Instrument",
+    "scope": "Demo2 ",
+    "code": "LastValuationAmount",
+    "valueRequired": false,
+    "displayName": "Last Valuation Amount",
+    "dataTypeId": {
+      "scope": "system",
+      "code": "number"
+    },
+    "lifeTime": "TimeVariant",
+    "constraintStyle": "Property",
+    "propertyDescription": "Last Valuation Amount"
+  }
