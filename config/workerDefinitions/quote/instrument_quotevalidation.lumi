@@ -11,7 +11,7 @@ Tets LUID should have quotes LUID_00003D9J
 --provider=Worker.InstrumentQuoteValidation
 --useDryRun
 --parameters
-LusidInstrumentID,Text,LUID_00003D9N,true
+LusidInstrumentID,Text,LUID_00003D9B,true
 ----
 
 /*
@@ -19,22 +19,25 @@ Setup definitions
 */
 
 @@lusid_instrument_id = select #PARAMETERVALUE(LusidInstrumentID);
---@@lusid_instrument_id = select 'LUID_00003D9N';
+--@@lusid_instrument_id = select 'LUID_00003D9B';
+
+-- Get quotes within last 7 days.
+@valid_quotes = SELECT 
+    *
+FROM Lusid.Instrument.Quote liq
+WHERE date('now', '-7 day') <=  date(liq.QuoteEffectiveAt) 
+AND date(liq.QuoteEffectiveAt) <= date('now');
 
 -- Not optimal, ideally would like to pivot instrment identifiers from li table into columns similar to liq 
 -- and then do a multiple join on insturment id and id type, so all records are captured.
 -- But doing this quick solution for POC workflow.
 SELECT
     li.LusidInstrumentId AS LUID
-FROM
-    [Lusid.Instrument] li
-LEFT JOIN Lusid.Instrument.Quote liq
+FROM [Lusid.Instrument] li
+LEFT JOIN @valid_quotes liq
     ON li.Isin = liq.InstrumentId
-WHERE
-    li.LusidInstrumentId = @@lusid_instrument_id
-    AND date('now', '-7 day') <=  date(liq.QuoteEffectiveAt) 
-    AND date(liq.QuoteEffectiveAt) <= date('now')
-    AND liq.InstrumentId IS Null;
+WHERE li.LusidInstrumentId = @@lusid_instrument_id
+AND liq.InstrumentId IS Null;
 
 enduse;
 
