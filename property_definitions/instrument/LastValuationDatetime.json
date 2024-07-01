@@ -1,6 +1,6 @@
 {
     "domain": "Instrument",
-    "scope": "Demo2 ",
+    "scope": "Demo2",
     "code": "LastValuationDatetime",
     "valueRequired": false,
     "displayName": "Last Valuation Datetime",
