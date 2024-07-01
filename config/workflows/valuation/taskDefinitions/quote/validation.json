@@ -65,7 +65,7 @@
             "fromState": "PendingValidation",
             "toState": "Complete",
             "trigger": "Validation-Complete",
-            "guard": "childTasks all (state eq 'Complete')"
+            "action": "TriggerParent-ValidationComplete"
         }
     ],
     "actions": [
@@ -109,7 +109,7 @@
             "name": "TriggerParent-ValidationComplete",
             "actionDetails": {
                 "type": "TriggerParentTask",
-                "trigger": "DataQualityCheck-Complete"
+                "trigger": "QuoteValidation-Complete"
             }
         }
     ]
