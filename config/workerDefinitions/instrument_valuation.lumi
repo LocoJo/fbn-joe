@@ -101,13 +101,27 @@ FROM @report;
     @@portfolio_scope AS PropertyScope
 FROM @report;
 
-@write_valuation_amount = SELECT *
+@write_valuation_amount = SELECT
+    [WriteAction],
+    WriteAsAt,
+    WriteError,
+    WriteErrorDetail
 FROM [Lusid.Property.Writer]
 where toWrite = @set_valuation_amount;
 
-@write_valuation_datetime = SELECT *
+@write_valuation_datetime = SELECT
+    [WriteAction],
+    WriteAsAt,
+    WriteError,
+    WriteErrorDetail
 FROM [Lusid.Property.Writer]
 where toWrite = @set_valuation_datetime;
+
+SELECT *
+FROM @write_valuation_amount
+UNION
+SELECT *
+FROM @write_valuation_datetime;
 
 -- Write to instrument property provider here to set the new insturment property value amonut and datetime properties for given LUID. 
 
