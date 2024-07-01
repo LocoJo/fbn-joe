@@ -19,13 +19,12 @@ LusidInstrumentID,Text,LUID_00003D9B,true
 /*
 Setup definitions
 */
-
 @@portfolio_scope = select #PARAMETERVALUE(portfolio_scope);
 @@portfolio_code = select #PARAMETERVALUE(portfolio_code);
 @@lusid_instrument_id = select #PARAMETERVALUE(LusidInstrumentID);
 
 /*
-@@lusid_instrument_id = select 'LUID_00003D9N';
+@@lusid_instrument_id = select 'LUID_00003D9B';
 @@portfolio_code = SELECT 'JC_UK';
 @@portfolio_scope = SELECT 'Demo2';
 */
@@ -49,6 +48,7 @@ FROM @metrics;
 @valuation_unpivoted = SELECT
     PortfolioCode,
     LusidInstrumentId,
+    ValuationDate,
     MeasureName,
     CASE
         WHEN MeasureStringValue IS NOT NULL THEN
@@ -75,12 +75,39 @@ enduse;
 @report = SELECT
     [PortfolioCode],
     LusidInstrumentId,
-    [Valuation/PVInPortfolioCcy] AS LUIDValuation
+    [Valuation/PVInPortfolioCcy] AS LUIDValuation,
+    ValuationDate
 FROM @valuation_pivoted;
 
-SELECT
-    [LUIDValuation]
+-- Build set property request for valuation amount
+@set_valuation_amount = SELECT
+    @@lusid_instrument_id AS EntityId,
+    'LusidInstrumentId' AS EntityIdType,
+    'LastValuationAmount' AS PropertyCode,
+    LUIDValuation AS Value,
+    'Instrument' AS Domain,
+    @@portfolio_scope AS EntityScope,
+    @@portfolio_scope AS PropertyScope
 FROM @report;
+
+-- Build set property request for valuation datetime
+@set_valuation_datetime = SELECT
+    @@lusid_instrument_id AS EntityId,
+    'LusidInstrumentId' AS EntityIdType,
+    'LastValuationDatetime' AS PropertyCode,
+    ValuationDate AS Value,
+    'Instrument' AS Domain,
+    @@portfolio_scope AS EntityScope,
+    @@portfolio_scope AS PropertyScope
+FROM @report;
+
+@write_valuation_amount = SELECT *
+FROM [Lusid.Property.Writer]
+where toWrite = @set_valuation_amount;
+
+@write_valuation_datetime = SELECT *
+FROM [Lusid.Property.Writer]
+where toWrite = @set_valuation_datetime;
 
 -- Write to instrument property provider here to set the new insturment property value amonut and datetime properties for given LUID. 
 
