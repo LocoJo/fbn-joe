@@ -107,7 +107,9 @@ FROM @report;
     WriteError,
     WriteErrorDetail
 FROM [Lusid.Property.Writer]
-where toWrite = @set_valuation_amount;
+WAIT 10
+where toWrite = @set_valuation_amount
+;
 
 @write_valuation_datetime = SELECT
     [WriteAction],
@@ -115,7 +117,9 @@ where toWrite = @set_valuation_amount;
     WriteError,
     WriteErrorDetail
 FROM [Lusid.Property.Writer]
-where toWrite = @set_valuation_datetime;
+WAIT 10
+where toWrite = @set_valuation_datetime
+;
 
 SELECT *
 FROM @write_valuation_amount
