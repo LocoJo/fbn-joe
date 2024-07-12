@@ -39,7 +39,9 @@ AND lpt.PortfolioScope = @@portfolio_scope;
 
 -- Return records where given instrument id exists but no transactions on given portfolio exist for it.
 SELECT DISTINCT
-    li.LusidInstrumentId AS LUID
+    li.LusidInstrumentId AS LUID,
+    @@portfolio_scope AS portfolio_scope,
+    @@portfolio_code AS portfolio_code
 FROM [Lusid.Instrument] li
 LEFT JOIN @portfolio_txns pt
 ON li.LusidInstrumentId = pt.LusidInstrumentId

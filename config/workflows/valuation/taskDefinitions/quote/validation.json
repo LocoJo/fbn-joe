@@ -13,6 +13,12 @@
             "name": "PendingValidation"
         },
         {
+            "name": "Exceptions"
+        },
+        {
+            "name": "Error"
+        },
+        {
             "name": "Complete"
         }
     ],
@@ -52,6 +58,18 @@
             "trigger": {
                 "type": "External"
             }
+        },
+        {
+            "name": "Exception-Resolved",
+            "trigger": {
+                "type": "External"
+            }
+        },
+        {
+            "name": "Error-Resolved",
+            "trigger": {
+                "type": "External"
+            }
         }
     ],
     "transitions": [
@@ -60,6 +78,27 @@
             "toState": "PendingValidation",
             "trigger": "initial-trigger",
             "action": "StartWorker-Validation"
+        },
+        {
+            "fromState": "PendingValidation",
+            "toState": "Error",
+            "trigger": "Validation-Error"
+        },
+        {
+            "fromState": "Error",
+            "toState": "PendingValidation",
+            "trigger": "Error-Resolved"
+        },
+        {
+            "fromState": "PendingValidation",
+            "toState": "Exceptions",
+            "trigger": "Validation-Exception"
+        },
+        {
+            "fromState": "Exceptions",
+            "toState": "Complete",
+            "trigger": "Exception-Resolved",
+            "action": "TriggerParent-ValidationComplete"
         },
         {
             "fromState": "PendingValidation",
@@ -97,8 +136,8 @@
                         },
                         "initialTrigger": "initial-trigger",
                         "childTaskFields": {
-                            "DataType": {
-                                "SetTo": "Quote"
+                            "LUID": {
+                                "MapFrom": "LUID"
                             }
                         }
                     }

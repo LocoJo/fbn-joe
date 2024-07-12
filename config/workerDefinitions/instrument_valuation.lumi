@@ -37,7 +37,7 @@ Setup definitions
 
 @metrics = VALUES
 ('Holding/Units', 'Value'),
-('Valuation/PvInPortfolioCcy', 'Value');
+('Valuation/PV', 'Value');
 --('Instrument/default/LusidInstrumentId', 'Value');
 
 @metrics_formatted = SELECT
@@ -75,7 +75,7 @@ enduse;
 @report = SELECT
     [PortfolioCode],
     LusidInstrumentId,
-    [Valuation/PVInPortfolioCcy] AS LUIDValuation,
+    [Valuation/PV] AS LUIDValuation,
     ValuationDate
 FROM @valuation_pivoted;
 

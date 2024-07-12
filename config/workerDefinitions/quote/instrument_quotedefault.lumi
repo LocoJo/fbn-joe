@@ -7,51 +7,44 @@ Test LUID should have no quotes: LUID_00003D9N
 Tets LUID should have quotes LUID_00003D9J
 */
 
-/*
 @x = use Sys.Admin.SetupView
 --provider=Worker.InstrumentQuoteDefault
 --useDryRun
 --parameters
 LusidInstrumentID,Text,LUID_00003D9N,true
 ----
-*/
 
 /*
 Setup definitions
 */
 
+@@lusid_instrument_id = select #PARAMETERVALUE(LusidInstrumentID);
+--@@lusid_instrument_id = select 'LUID_00003D9N';
 
-
-
-
-
-
---@@lusid_instrument_id = select #PARAMETERVALUE(LusidInstrumentID);
-@@lusid_instrument_id = select 'LUID_00003D9N';
-
+@@Isin = SELECT 
+    Max(Isin)
+FROM Lusid.Instrument li
+WHERE li.LusidInstrumentId = @@lusid_instrument_id
+;
 
 @quotes_to_default = SELECT
     'mid' AS Field,
-    @@lusid_instrument_id AS InstrumentId,
-    'LusidInstrumentID' AS InstrumentIdType,
-    'default' AS QuoteScope,
+    @@Isin AS InstrumentId,
+    'Isin' AS InstrumentIdType,
+    'Demo2' AS QuoteScope,
     'price' AS QuoteType,
     'GBP' AS Unit,
     100.11 AS Value,
-    'Lusid' AS Provider,
-    #2024-06-27# AS QuoteEffectiveAt
+    'Client' AS Provider,
+    'Client' AS PriceSource,
+    #2024-07-12# AS QuoteEffectiveAt
 ;
 
 select *
 from Lusid.Instrument.Quote.Writer
 where toWrite = @quotes_to_default;
 
-
-
-/*
 enduse;
 
--- Returns records if they need to be handled by defaulter.
 SELECT *
 FROM @x
-*/

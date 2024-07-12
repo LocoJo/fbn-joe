@@ -88,11 +88,11 @@
                     "completedNoResults": "ExceptionHandling-Error"
                 },
                 "workerParameters": {
-                    "portfolio_scope": {
+                    "PortfolioScope": {
                         "MapFrom": "portfolio_scope",
                         "SetTo": null
                     },
-                    "portfolio_code": {
+                    "PortfolioCode": {
                         "MapFrom": "portfolio_code",
                         "SetTo": null
                     },
@@ -107,7 +107,7 @@
             "name": "TriggerParent-DefaultingComplete",
             "actionDetails": {
                 "type": "TriggerParentTask",
-                "trigger": "Validation-Complete"
+                "trigger": "Exception-Resolved"
             }
         }
     ]

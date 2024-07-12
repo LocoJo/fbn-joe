@@ -20,10 +20,6 @@
         {
             "name": "LUID",
             "type": "String"
-        },
-        {
-            "name": "DataType",
-            "type": "String"
         }
     ],
     "initialState": {
@@ -93,7 +89,7 @@
             "name": "TriggerParent-DefaultingComplete",
             "actionDetails": {
                 "type": "TriggerParentTask",
-                "trigger": "Validation-Complete"
+                "trigger": "Exception-Resolved"
             }
         }
     ]

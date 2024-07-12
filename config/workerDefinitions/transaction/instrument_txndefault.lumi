@@ -20,13 +20,18 @@ LusidInstrumentID,Text,LUID_00003D9N,true
 Setup definitions
 */
 
---@@lusid_instrument_id = select #PARAMETERVALUE(LusidInstrumentID);
+@@portfolio_scope = select #PARAMETERVALUE(PortfolioScope);
+@@portfolio_code = select #PARAMETERVALUE(PortfolioCode);
+@@lusid_instrument_id = select #PARAMETERVALUE(LusidInstrumentID);
+
+/*
 @@lusid_instrument_id = select 'LUID_00003D9N';
 @@portfolio_code = SELECT 'JC_UK';
 @@portfolio_scope = SELECT 'Demo2';
+*/
 
 @txn_to_default = SELECT
-    'default' AS InstrumentScope,
+    'Demo2' AS InstrumentScope,
     @@lusid_instrument_id AS LusidInstrumentId,
     @@portfolio_code AS PortfolioCode,
     @@portfolio_scope AS PortfolioScope,
@@ -35,8 +40,8 @@ Setup definitions
     100 AS TracePrice,
     'Price' AS TradePriceType,
     1 AS TradeToPortfolioRate,
-    #2024-06-25# AS TransactionDate,
-    #2024-06-27# AS SettlementDate,
+    #2024-07-12# AS TransactionDate,
+    #2024-07-15# AS SettlementDate,
     'JC-001' AS TxnId,
     'Buy' AS Type,
     100000 AS Units;
