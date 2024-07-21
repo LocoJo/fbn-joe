@@ -2,9 +2,6 @@
 Worker to default quotes in lusid.
 
 Should return results on success.
-
-Test LUID should have no quotes: LUID_00003D9N
-Tets LUID should have quotes LUID_00003D9J
 */
 
 @x = use Sys.Admin.SetupView
@@ -19,8 +16,8 @@ Setup definitions
 */
 
 @@lusid_instrument_id = select #PARAMETERVALUE(LusidInstrumentID);
---@@lusid_instrument_id = select 'LUID_00003D9N';
 
+-- Aggregate function to reduce result set to 1, we know this should only ever return 1 value.
 @@Isin = SELECT 
     Max(Isin)
 FROM Lusid.Instrument li
