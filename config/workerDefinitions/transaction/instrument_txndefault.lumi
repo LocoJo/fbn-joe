@@ -58,7 +58,7 @@ Setup definitions
     @@portfolio_scope AS PortfolioScope,
     @@trade_currency AS TradeCurrency,
     @@settlement_currency AS SettlementCurrency,
-    @@trade_price AS TracePrice,
+    @@trade_price AS TradePrice,
     @@trade_price_type AS TradePriceType,
     @@trade_to_portfolio_fx_rate AS TradeToPortfolioRate,
     @@trade_date AS TransactionDate,
