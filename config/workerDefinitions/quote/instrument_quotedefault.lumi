@@ -17,6 +17,17 @@ Setup definitions
 
 @@lusid_instrument_id = select #PARAMETERVALUE(LusidInstrumentID);
 
+-- Static
+@@price_field = SELECT 'mid';
+@@symbology = SELECT 'Isin';
+@@scope = SELECT 'Demo2';
+@@quote_type = SELECT 'price';
+@@unit = SELECT 'GBP';
+@@default_level = SELECT 100.00;
+@@provider = SELECT 'Client';
+@@price_source = SELECT 'Client';
+@@quote_effective_at = SELECT DATE('now');
+
 -- Aggregate function to reduce result set to 1, we know this should only ever return 1 value.
 @@Isin = SELECT 
     Max(Isin)
@@ -25,16 +36,16 @@ WHERE li.LusidInstrumentId = @@lusid_instrument_id
 ;
 
 @quotes_to_default = SELECT
-    'mid' AS Field,
+    @@price_field AS Field,
     @@Isin AS InstrumentId,
-    'Isin' AS InstrumentIdType,
-    'Demo2' AS QuoteScope,
-    'price' AS QuoteType,
-    'GBP' AS Unit,
-    100.11 AS Value,
-    'Client' AS Provider,
-    'Client' AS PriceSource,
-    DATE('now') AS QuoteEffectiveAt
+    @@symbology AS InstrumentIdType,
+    @@scope AS QuoteScope,
+    @@quote_type AS QuoteType,
+    @@unit AS Unit,
+    @@default_level AS Value,
+    @@provider AS Provider,
+    @@price_source AS PriceSource,
+    @@quote_effective_at AS QuoteEffectiveAt
 ;
 
 select *
