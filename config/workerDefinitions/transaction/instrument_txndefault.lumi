@@ -19,32 +19,54 @@ LusidInstrumentID,Text,LUID_00003D9N,true
 /*
 Setup definitions
 */
-
 @@portfolio_scope = select #PARAMETERVALUE(PortfolioScope);
 @@portfolio_code = select #PARAMETERVALUE(PortfolioCode);
 @@lusid_instrument_id = select #PARAMETERVALUE(LusidInstrumentID);
 
-/*
-@@lusid_instrument_id = select 'LUID_00003D9N';
-@@portfolio_code = SELECT 'JC_UK';
-@@portfolio_scope = SELECT 'Demo2';
-*/
+-- Setup for converting business days to calendar days... an excuse to practice some sql
+@@settlement_business_days = SELECT 3;
+@@week_business_days = SELECT 5;
+@@conversion_offset = SELECT (@@settlement_business_days % @@week_business_days);
+@@settlement_calendar_days = SELECT
+    ((@@settlement_business_days / @@week_business_days) * 7) + --Converting business weeks to calendar weeks.
+    @@conversion_offset + --Adding on the offset of the conversion.
+    CASE
+        WHEN ( CAST(strftime('%w', 'now') AS INTEGER) + @@conversion_offset ) > @@week_business_days
+            THEN 2
+        ELSE 0
+    END AS CalendarDays -- Offsetting by an additional 2 if the offset were to land calendar days on the weekend.
+;
+
+--Field deafults.
+@@scope = SELECT 'Demo2';
+@@trade_currency = SELECT 'GBP';
+@@settlement_currency = SELECT @@trade_currency;
+@@trade_price = SELECT 100;
+@@trade_price_type = SELECT 'Price';
+@@trade_to_portfolio_fx_rate = SELECT 1;
+@@trade_date = SELECT date('now');
+@@settlement_date = SELECT date('now', '+' || CAST(@@settlement_calendar_days AS text) || ' day');
+@@transaction_id = SELECT @@lusid_instrument_id || '_' || @@trade_date;
+@@side = SELECT 'Buy';
+@@size = SELECT 100000;
+
 
 @txn_to_default = SELECT
-    'Demo2' AS InstrumentScope,
+    @@scope AS InstrumentScope,
     @@lusid_instrument_id AS LusidInstrumentId,
     @@portfolio_code AS PortfolioCode,
     @@portfolio_scope AS PortfolioScope,
-    'GBP' AS TradeCurrency,
-    'GBP' AS SettlementCurrency,
-    100 AS TracePrice,
-    'Price' AS TradePriceType,
-    1 AS TradeToPortfolioRate,
-    #2024-07-12# AS TransactionDate,
-    #2024-07-15# AS SettlementDate,
-    'JC-001' AS TxnId,
-    'Buy' AS Type,
-    100000 AS Units;
+    @@trade_currency AS TradeCurrency,
+    @@settlement_currency AS SettlementCurrency,
+    @@trade_price AS TracePrice,
+    @@trade_price_type AS TradePriceType,
+    @@trade_to_portfolio_fx_rate AS TradeToPortfolioRate,
+    @@trade_date AS TransactionDate,
+    @@settlement_date AS SettlementDate,
+    @@transaction_id AS TxnId, -- need to modify this so it's kept unique.
+    @@side AS Type,
+    @@size AS Units
+;
 
 select
     WriteAction,
@@ -53,7 +75,8 @@ select
     WriteError,
     WriteErrorDetail
 from Lusid.Portfolio.Txn.Writer
-where toWrite = @txn_to_default;
+where toWrite = @txn_to_default
+;
 
 enduse;
 

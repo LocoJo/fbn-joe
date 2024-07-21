@@ -2,9 +2,6 @@
 Worker to validate txns exist for a given portfolio scope, code and LUID.
 
 Returns records if no txns exist.
-
-Test LUID should have no txns on any portfolios: LUID_00003D9N
-Tets LUID should have txns on any portfolio Demo2/JC_UK LUID_00003D9J
 */
 
 @x = use Sys.Admin.SetupView
@@ -23,12 +20,6 @@ Setup definitions
 @@portfolio_scope = select #PARAMETERVALUE(PortfolioScope);
 @@portfolio_code = select #PARAMETERVALUE(PortfolioCode);
 @@lusid_instrument_id = select #PARAMETERVALUE(LusidInstrumentID);
-
-/*
-@@portfolio_scope = select 'Demo2';
-@@portfolio_code = select 'JC_UK';
-@@lusid_instrument_id = select 'LUID_00003D9N';
-*/
 
 -- Get all txns for specificed portfolio.
 @portfolio_txns = SELECT 
