@@ -37,7 +37,7 @@ WHERE li.LusidInstrumentId = @@lusid_instrument_id
     100.11 AS Value,
     'Client' AS Provider,
     'Client' AS PriceSource,
-    #2024-07-12# AS QuoteEffectiveAt
+    DATE('now') AS QuoteEffectiveAt
 ;
 
 select *
