@@ -80,6 +80,5 @@ where toWrite = @txn_to_default
 
 enduse;
 
--- Returns records if they need to be handled by defaulter.
 SELECT *
 FROM @x
