@@ -1,0 +1,10 @@
+SELECT 
+    [LusidInstrumentId],
+    Units,
+    HoldingFromPortfolioDerivedProperty
+FROM
+    [Lusid.Portfolio.Holding]
+WHERE
+    [PortfolioCode] = 'JC_UK' AND
+    [PortfolioScope] = 'Demo2'
+;
